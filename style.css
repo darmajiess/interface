@@ -252,8 +252,16 @@ small {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s ease;
+    font-size: 16px;
 }
 
 .camera-btn:hover {
     background: #2980b9;
+}
+
+/* Hapus styling .upload-btn label sebelumnya */
+.upload-btn label {
+    /* Hapus semua properti sebelumnya */
+    display: none; /* Sembunyikan label default */
+}
 }
