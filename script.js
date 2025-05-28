@@ -13,11 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // ... (previous code)
 
 // Camera Access Functionality
-const startCameraBtn = document.createElement('button');
-startCameraBtn.textContent = 'Ambil Foto';
-startCameraBtn.className = 'camera-btn';
-startCameraBtn.type = 'button';
-
+const cameraBtn = document.getElementById('openCamera');
+const fileInput = document.getElementById('fileUpload');
+	
 // Replace existing camera input
 const cameraContainer = document.querySelector('#camera').parentNode;
 cameraContainer.replaceChild(startCameraBtn, document.querySelector('#camera'));
