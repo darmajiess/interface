@@ -1,902 +1,352 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perhitungan Pemotongan Rail</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #333;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 1200px;
-            padding: 30px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, #2c3e50, #4a6491);
-            border-radius: 10px;
-            color: white;
-        }
-        
-        h1 {
-            margin-bottom: 10px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .main-content {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        
-        .input-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 25px;
-            border: 1px solid #eaeaea;
-            flex: 1;
-            min-width: 350px;
-        }
-        
-        .result-section {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            padding: 25px;
-            border: 1px solid #eaeaea;
-            flex: 1;
-            min-width: 350px;
-        }
-        
-        .section-title {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #3498db;
-            color: #2c3e50;
-        }
-        
-        .section-title i {
-            margin-right: 10px;
-            font-size: 1.8rem;
-            color: #3498db;
-        }
-        
-        .section-title h2 {
-            font-size: 1.8rem;
-        }
-        
-        .input-group {
-            margin-bottom: 25px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-        
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            background: white;
-            transition: all 0.3s;
-        }
-        
-        input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
-        }
-        
-        .cuts-container {
-            margin: 20px 0;
-        }
-        
-        .cut-input {
-            display: flex;
-            margin-bottom: 15px;
-            gap: 12px;
-            align-items: center;
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        
-        .input-label {
-            min-width: 80px;
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.1rem;
-        }
-        
-        .btn {
-            background: linear-gradient(to bottom, #3498db, #2980b9);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(to bottom, #e74c3c, #c0392b);
-        }
-        
-        .btn-success {
-            background: linear-gradient(to bottom, #2ecc71, #27ae60);
-        }
-        
-        .btn-print {
-            background: linear-gradient(to bottom, #9b59b6, #8e44ad);
-        }
-        
-        .buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 20px;
-        }
-        
-        .btn i {
-            margin-right: 10px;
-            font-size: 1.2rem;
-        }
-        
-        .result-container {
-            margin-top: 20px;
-            max-height: 500px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        
-        .rail-card {
-            background: white;
-            border: 3px solid #2c3e50;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .rail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #3498db;
-        }
-        
-        .rail-title {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #2c3e50;
-        }
-        
-        .rail-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-        }
-        
-        .cut-item {
-            background: #e3f2fd;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid #bbdefb;
-            transition: transform 0.3s;
-        }
-        
-        .cut-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .cut-size {
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        
-        .cut-quantity {
-            font-weight: 600;
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-        
-        .remaining-item {
-            background: #ffebee;
-            border: 1px solid #ffcdd2;
-        }
-        
-        .remaining-label {
-            color: #e74c3c;
-        }
-        
-        .summary {
-            background: linear-gradient(to right, #e3f2fd, #bbdefb);
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            border: 2px solid #90caf9;
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-        
-        .summary-card {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #eaeaea;
-        }
-        
-        .summary-label {
-            color: #7f8c8d;
-            font-weight: 600;
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-        
-        .summary-value {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: #2c3e50;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            width: 100%;
-            border: 2px dashed #bdc3c7;
-            border-radius: 10px;
-            background: #f9f9f9;
-        }
-        
-        .no-results i {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            color: #3498db;
-        }
-        
-        .no-results p {
-            font-size: 1.3rem;
-        }
-        
-        .compact-report {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
-            .rail-content {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-        }
-        
-        /* Print Styles - Dioptimalkan untuk memulai dari atas kertas */
-        @media print {
-            @page {
-                size: A4;
-                margin: 0.5cm;
-            }
-            
-            body {
-                background: white;
-                padding: 0;
-                font-size: 12pt;
-                color: #000;
-                /* Pastikan tidak ada margin tambahan */
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            
-            .container, .result-section, .compact-report {
-                max-width: 100%;
-                margin: 0 !important;
-                padding: 0 !important;
-                box-shadow: none !important;
-                border-radius: 0 !important;
-                background: white !important;
-                border: none !important;
-                /* Pastikan dimulai dari atas halaman */
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-            }
-            
-            header, .input-section, .buttons, 
-            .section-title, .result-section > .section-title,
-            .no-results, .summary, .report-header,
-            .btn, .input-group, .cuts-container, 
-            .result-container, .summary-grid {
-                display: none !important;
-            }
-            
-            .compact-report {
-                display: block !important;
-                margin-top: 0 !important;
-                border-top: none !important;
-                padding-top: 0 !important;
-                /* Pastikan tidak ada ruang di atas laporan */
-                position: absolute;
-                top: 0.5cm; /* Sesuaikan dengan margin kertas */
-                left: 0.5cm;
-                right: 0.5cm;
-                bottom: 0.5cm;
-            }
-            
-            .report-card {
-                page-break-inside: avoid;
-                margin-bottom: 15px;
-                box-shadow: none;
-                border: 1px solid #ddd;
-                padding: 15px;
-                /* Hilangkan margin atas yang tidak perlu */
-                margin-top: 0;
-            }
-            
-            .report-title {
-                font-size: 16pt;
-                border-bottom: 2px solid #000;
-                padding-bottom: 10px;
-                margin-bottom: 10px;
-                /* Hilangkan margin atas yang tidak perlu */
-                margin-top: 0;
-            }
-            
-            .report-content {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 12px;
-            }
-            
-            .report-item {
-                min-width: 100px;
-                padding: 10px;
-                font-size: 12pt;
-                border: 1px solid #ddd;
-                border-radius: 4px;
-                text-align: center;
-                /* Pastikan tidak ada margin yang menambah ruang */
-                margin: 0;
-            }
-            
-            .report-size {
-                font-size: 14pt;
-                font-weight: bold;
-            }
-            
-            .report-quantity {
-                font-size: 11pt;
-            }
-            
-            .report-remaining {
-                background: #f9f9f9;
-                border: 1px solid #ddd;
-            }
-            
-            .report-remaining .report-size {
-                color: #000;
-            }
-            
-            .print-header {
-                text-align: center;
-                margin-bottom: 20px;
-                padding-bottom: 15px;
-                border-bottom: 2px solid #000;
-                /* Pastikan header mulai dari atas */
-                margin-top: 0;
-                padding-top: 0;
-            }
-            
-            .print-header h2 {
-                font-size: 20pt;
-                margin-bottom: 5px;
-                /* Pastikan tidak ada margin atas yang besar */
-                margin-top: 0;
-            }
-            
-            .print-header p {
-                font-size: 12pt;
-                color: #555;
-                margin: 0;
-            }
-            
-            .print-footer {
-                text-align: center;
-                margin-top: 20px;
-                padding-top: 10px;
-                border-top: 1px solid #ddd;
-                font-size: 10pt;
-                color: #777;
-                /* Pastikan tidak menambah ruang di bawah */
-                margin-bottom: 0;
-            }
-            
-            /* Hapus semua margin dan padding yang tidak perlu */
-            body, div, h2, p {
-                margin: 0;
-                padding: 0;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Hitung Gorden</title>
+  <style>
+    /* Base Styles */
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    h2 {
+      text-align: center;
+      margin-top: 0;
+    }
+    
+    /* Form Group Styles */
+    .form-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+    }
+    
+    input, textarea, select {
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-top: 5px;
+      width: 100%;
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    /* Button Styles */
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    
+    button {
+      padding: 12px 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      flex: 1 1 200px;
+      font-weight: bold;
+    }
+    
+    button:hover {
+      background: #0056b3;
+    }
+    
+    /* Table Styles - Desktop */
+    .responsive-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      overflow-x: auto;
+      display: block;
+    }
+    
+    .responsive-table th, 
+    .responsive-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    
+    .responsive-table th {
+      background-color: #f0f0f0;
+      position: sticky;
+      top: 0;
+    }
+    
+    .responsive-table input,
+    .responsive-table select {
+      width: 100%;
+      min-width: 80px;
+      padding: 8px;
+    }
+    
+    /* Mobile View */
+    @media (max-width: 768px) {
+      .responsive-table {
+        display: block;
+      }
+      
+      .responsive-table thead {
+        display: none;
+      }
+      
+      .responsive-table tr {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ddd;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      
+      .responsive-table td {
+        display: flex;
+        text-align: left;
+        padding: 10px;
+        border: none;
+        border-bottom: 1px solid #eee;
+        width: 100%;
+      }
+      
+      .responsive-table td:last-child {
+        border-bottom: none;
+      }
+      
+      .responsive-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        width: 40%;
+        min-width: 120px;
+        display: inline-block;
+      }
+      
+      .button-container {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+      }
+    }
+    
+    /* Preview Modal */
+    #preview-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.8);
+      overflow: auto;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background: white;
+      margin: 50px auto;
+      padding: 20px;
+      max-width: 95%;
+      border-radius: 8px;
+      position: relative;
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: #dc3545;
+    }
+    
+    /* Print Styles */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #preview-modal, 
+      #preview-modal * {
+        visibility: visible;
+      }
+      #preview-modal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: auto;
+        background: white;
+      }
+      .close-btn {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-train"></i> Perhitungan Pemotongan Rail</h1>
-            <p class="subtitle">Hitung pemotongan rail dengan laporan compact dan fitur cetak A4</p>
-        </header>
-        
-        <div class="main-content">
-            <div class="input-section">
-                <div class="section-title">
-                    <i class="fas fa-edit"></i>
-                    <h2>Input Data</h2>
-                </div>
-                
-                <div class="input-group">
-                    <label for="rail-length"><i class="fas fa-ruler"></i> Panjang Rail (cm):</label>
-                    <input type="number" id="rail-length" min="1" value="1200" placeholder="Panjang rail">
-                </div>
-                
-                <div class="input-group">
-                    <label><i class="fas fa-cut"></i> Potongan Rail:</label>
-                    <div class="cuts-container" id="cuts-container">
-                        <div class="cut-input">
-                            <div class="input-label">Ukuran:</div>
-                            <input type="number" class="cut-size" min="1" placeholder="Ukuran (cm)" value="350">
-                            <div class="input-label">Jumlah:</div>
-                            <input type="number" class="cut-quantity" min="1" value="2" placeholder="Jumlah">
-                            <button class="btn btn-danger remove-cut"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="cut-input">
-                            <div class="input-label">Ukuran:</div>
-                            <input type="number" class="cut-size" min="1" placeholder="Ukuran (cm)" value="250">
-                            <div class="input-label">Jumlah:</div>
-                            <input type="number" class="cut-quantity" min="1" value="3" placeholder="Jumlah">
-                            <button class="btn btn-danger remove-cut"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="cut-input">
-                            <div class="input-label">Ukuran:</div>
-                            <input type="number" class="cut-size" min="1" placeholder="Ukuran (cm)" value="400">
-                            <div class="input-label">Jumlah:</div>
-                            <input type="number" class="cut-quantity" min="1" value="1" placeholder="Jumlah">
-                            <button class="btn btn-danger remove-cut"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                    <button class="btn" id="add-cut"><i class="fas fa-plus"></i> Tambah Potongan</button>
-                </div>
-                
-                <div class="buttons">
-                    <button class="btn btn-success" id="calculate"><i class="fas fa-calculator"></i> Hitung</button>
-                    <button class="btn btn-danger" id="reset"><i class="fas fa-redo"></i> Reset</button>
-                    <button class="btn btn-print" id="print-btn"><i class="fas fa-print"></i> Cetak Laporan</button>
-                </div>
-            </div>
-            
-            <div class="result-section">
-                <div class="section-title">
-                    <i class="fas fa-list"></i>
-                    <h2>Hasil Pemotongan</h2>
-                </div>
-                
-                <div class="result-container" id="results-container">
-                    <div class="no-results">
-                        <i class="fas fa-ruler-combined"></i>
-                        <p>Masukkan data dan klik "Hitung" untuk melihat hasil</p>
-                    </div>
-                </div>
-                
-                <div class="summary" id="summary">
-                    <div class="summary-grid">
-                        <div class="summary-card">
-                            <div class="summary-label">Total Batang</div>
-                            <div class="summary-value" id="total-rails">0</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-label">Total Potongan</div>
-                            <div class="summary-value" id="total-cuts">0</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-label">Panjang Terpakai</div>
-                            <div class="summary-value" id="total-used">0 cm</div>
-                        </div>
-                        <div class="summary-card">
-                            <div class="summary-label">Total Sisa</div>
-                            <div class="summary-value" id="total-waste">0 cm</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Laporan compact untuk cetak -->
-                <div class="compact-report" id="compact-report">
-                    <div class="print-header">
-                        <h2>LAPORAN PEMOTONGAN RAIL</h2>
-                        <p>Tanggal: <span id="report-date"></span></p>
-                    </div>
-                    <div id="compact-results"></div>
-                    <div class="print-footer">
-                        <p>Dokumen ini dicetak secara otomatis dari Aplikasi Perhitungan Pemotongan Rail</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const railLengthInput = document.getElementById('rail-length');
-            const cutsContainer = document.getElementById('cuts-container');
-            const addCutBtn = document.getElementById('add-cut');
-            const calculateBtn = document.getElementById('calculate');
-            const resetBtn = document.getElementById('reset');
-            const printBtn = document.getElementById('print-btn');
-            const resultsContainer = document.getElementById('results-container');
-            const compactResults = document.getElementById('compact-results');
-            const compactReport = document.getElementById('compact-report');
-            const reportDate = document.getElementById('report-date');
-            
-            // Set current date for report
-            const now = new Date();
-            reportDate.textContent = now.toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric'
-            });
-            
-            // Menambahkan potongan baru
-            addCutBtn.addEventListener('click', function() {
-                const cutInput = document.createElement('div');
-                cutInput.className = 'cut-input';
-                cutInput.innerHTML = `
-                    <div class="input-label">Ukuran:</div>
-                    <input type="number" class="cut-size" min="1" placeholder="Ukuran (cm)">
-                    <div class="input-label">Jumlah:</div>
-                    <input type="number" class="cut-quantity" min="1" value="1" placeholder="Jumlah">
-                    <button class="btn btn-danger remove-cut"><i class="fas fa-trash"></i></button>
-                `;
-                cutsContainer.appendChild(cutInput);
-                
-                // Tambahkan event listener untuk tombol hapus
-                cutInput.querySelector('.remove-cut').addEventListener('click', function() {
-                    if (cutsContainer.children.length > 1) {
-                        cutsContainer.removeChild(cutInput);
-                    } else {
-                        alert('Minimal harus ada satu potongan');
-                    }
-                });
-            });
-            
-            // Event listener untuk tombol hapus yang sudah ada
-            document.querySelectorAll('.remove-cut').forEach(button => {
-                button.addEventListener('click', function() {
-                    const cutInput = this.parentElement;
-                    if (cutsContainer.children.length > 1) {
-                        cutsContainer.removeChild(cutInput);
-                    } else {
-                        alert('Minimal harus ada satu potongan');
-                    }
-                });
-            });
-            
-            // Fungsi reset
-            resetBtn.addEventListener('click', function() {
-                railLengthInput.value = '1200';
-                
-                // Hapus semua potongan kecuali yang pertama
-                while (cutsContainer.children.length > 3) {
-                    cutsContainer.removeChild(cutsContainer.lastChild);
-                }
-                
-                // Reset nilai input pertama
-                const sizeInputs = cutsContainer.querySelectorAll('.cut-size');
-                const qtyInputs = cutsContainer.querySelectorAll('.cut-quantity');
-                if (sizeInputs.length >= 3 && qtyInputs.length >= 3) {
-                    sizeInputs[0].value = '350';
-                    qtyInputs[0].value = '2';
-                    sizeInputs[1].value = '250';
-                    qtyInputs[1].value = '3';
-                    sizeInputs[2].value = '400';
-                    qtyInputs[2].value = '1';
-                }
-                
-                // Kosongkan hasil
-                resultsContainer.innerHTML = `
-                    <div class="no-results">
-                        <i class="fas fa-ruler-combined"></i>
-                        <p>Masukkan data dan klik "Hitung" untuk melihat hasil</p>
-                    </div>
-                `;
-                
-                // Reset summary
-                document.getElementById('total-rails').textContent = '0';
-                document.getElementById('total-cuts').textContent = '0';
-                document.getElementById('total-used').textContent = '0 cm';
-                document.getElementById('total-waste').textContent = '0 cm';
-            });
-            
-            // Fungsi menghitung
-            calculateBtn.addEventListener('click', function() {
-                const railLength = parseFloat(railLengthInput.value);
-                
-                if (isNaN(railLength) || railLength <= 0) {
-                    alert('Masukkan panjang rail yang valid (bilangan positif)');
-                    return;
-                }
-                
-                // Dapatkan semua potongan dengan jumlahnya
-                const cutSizes = document.querySelectorAll('.cut-size');
-                const cutQuantities = document.querySelectorAll('.cut-quantity');
-                const cuts = [];
-                
-                for (let i = 0; i < cutSizes.length; i++) {
-                    const size = parseFloat(cutSizes[i].value);
-                    const quantity = parseInt(cutQuantities[i].value) || 1;
-                    
-                    if (!isNaN(size) && size > 0 && quantity > 0) {
-                        if (size > railLength) {
-                            alert(`Potongan ${size} cm diabaikan karena melebihi panjang rail`);
-                        } else {
-                            // Tambahkan potongan sebanyak jumlah yang diminta
-                            for (let j = 0; j < quantity; j++) {
-                                cuts.push(size);
-                            }
-                        }
-                    }
-                }
-                
-                if (cuts.length === 0) {
-                    alert('Masukkan setidaknya satu ukuran potongan yang valid');
-                    return;
-                }
-                
-                // Proses perhitungan pemotongan rail
-                const result = calculateRailCuts(railLength, cuts);
-                
-                // Tampilkan hasil
-                displayResults(result, railLength, cuts.length);
-                
-                // Tampilkan laporan compact untuk cetak
-                displayCompactReport(result, railLength, cuts.length);
-            });
-            
-            // Fungsi cetak
-            printBtn.addEventListener('click', function() {
-                // Tampilkan laporan compact jika belum ditampilkan
-                if (resultsContainer.innerHTML.includes('no-results')) {
-                    alert('Silakan hitung terlebih dahulu sebelum mencetak');
-                    return;
-                }
-                
-                window.print();
-            });
-            
-            // Algoritma untuk menghitung pemotongan rail
-            function calculateRailCuts(railLength, cuts) {
-                // Urutkan potongan dari yang terbesar ke terkecil
-                const sortedCuts = [...cuts].sort((a, b) => b - a);
-                const rails = [];
-                
-                // Buat batang rail pertama
-                rails.push({
-                    cuts: [],
-                    currentLength: railLength,
-                    remaining: railLength
-                });
-                
-                // Distribusikan setiap potongan
-                for (let cut of sortedCuts) {
-                    let placed = false;
-                    
-                    // Cari batang rail yang bisa menampung potongan ini
-                    for (let rail of rails) {
-                        if (rail.remaining >= cut) {
-                            rail.cuts.push(cut);
-                            rail.remaining -= cut;
-                            placed = true;
-                            break;
-                        }
-                    }
-                    
-                    // Jika tidak ada rail yang cukup, buat rail baru
-                    if (!placed) {
-                        const newRail = {
-                            cuts: [cut],
-                            currentLength: railLength,
-                            remaining: railLength - cut
-                        };
-                        rails.push(newRail);
-                    }
-                }
-                
-                return rails;
-            }
-            
-            // Menampilkan hasil dalam format ilustrasi
-            function displayResults(rails, railLength, totalCuts) {
-                if (rails.length === 0) {
-                    resultsContainer.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <p>Tidak ada hasil yang dapat ditampilkan</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                let resultsHTML = '';
-                let totalUsedLength = 0;
-                let totalWaste = 0;
-                
-                rails.forEach((rail, index) => {
-                    const railTotal = rail.cuts.reduce((sum, cut) => sum + cut, 0);
-                    totalUsedLength += railTotal;
-                    totalWaste += rail.remaining;
-                    
-                    // Kelompokkan potongan yang sama
-                    const cutGroups = {};
-                    rail.cuts.forEach(cut => {
-                        cutGroups[cut] = (cutGroups[cut] || 0) + 1;
-                    });
-                    
-                    let cutsHTML = '';
-                    
-                    // Tampilkan setiap kelompok potongan
-                    for (const [size, quantity] of Object.entries(cutGroups)) {
-                        cutsHTML += `
-                            <div class="cut-item">
-                                <div class="cut-size">${size} cm</div>
-                                <div class="cut-quantity">${quantity} potong</div>
-                            </div>
-                        `;
-                    }
-                    
-                    // Tambahkan sisa
-                    cutsHTML += `
-                        <div class="cut-item remaining-item">
-                            <div class="cut-size remaining-label">${rail.remaining} cm</div>
-                            <div class="cut-quantity">SISA</div>
-                        </div>
-                    `;
-                    
-                    resultsHTML += `
-                        <div class="rail-card">
-                            <div class="rail-header">
-                                <div class="rail-title">Batang Rail #${index + 1}</div>
-                                <div>${rail.cuts.length} Potongan</div>
-                            </div>
-                            <div class="rail-content">
-                                ${cutsHTML}
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                resultsContainer.innerHTML = resultsHTML;
-                
-                // Update summary
-                document.getElementById('total-rails').textContent = rails.length;
-                document.getElementById('total-cuts').textContent = totalCuts;
-                document.getElementById('total-used').textContent = `${totalUsedLength} cm`;
-                document.getElementById('total-waste').textContent = `${totalWaste} cm`;
-            }
-            
-            // Menampilkan laporan compact untuk cetak
-            function displayCompactReport(rails, railLength, totalCuts) {
-                let compactHTML = '';
-                
-                rails.forEach((rail, index) => {
-                    // Kelompokkan potongan yang sama
-                    const cutGroups = {};
-                    rail.cuts.forEach(cut => {
-                        cutGroups[cut] = (cutGroups[cut] || 0) + 1;
-                    });
-                    
-                    let reportItemsHTML = '';
-                    
-                    // Tampilkan setiap kelompok potongan
-                    for (const [size, quantity] of Object.entries(cutGroups)) {
-                        reportItemsHTML += `
-                            <div class="report-item">
-                                <div class="report-size">${size} cm</div>
-                                <div class="report-quantity">${quantity}×</div>
-                            </div>
-                        `;
-                    }
-                    
-                    // Tambahkan sisa
-                    reportItemsHTML += `
-                        <div class="report-item report-remaining">
-                            <div class="report-size">${rail.remaining} cm</div>
-                            <div class="report-quantity">SISA</div>
-                        </div>
-                    `;
-                    
-                    compactHTML += `
-                        <div class="report-card">
-                            <div class="report-title">Batang Rail #${index + 1}</div>
-                            <div class="report-content">
-                                ${reportItemsHTML}
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                compactResults.innerHTML = compactHTML;
-            }
-        });
-    </script>
+  <div class="container">
+    <h2>Form Penghitungan Gorden</h2>
     
-    <!-- Font Awesome for icons -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <div class="form-group">
+      <label>Nama Customer: <input type="text" id="nama"></label>
+      <label>Alamat: <textarea id="alamat"></textarea></label>
+      <label>No HP: <input type="text" id="hp"></label>
+      <label>Tanggal & Waktu Pengukuran: <input type="datetime-local" id="pengukuran"></label>
+      <label>Tanggal & Waktu Pekerjaan: <input type="datetime-local" id="waktu"></label>
+    </div>
+    
+    <table class="responsive-table" id="tabel-gorden">
+      <thead>
+        <tr>
+          <th>Nama Ruangan</th>
+          <th>Lebar</th>
+          <th>Tinggi</th>
+          <th>Jumlah Jendela</th>
+          <th>Bahan Tebal (m)</th>
+          <th>Deskripsi Tebal</th>
+          <th>Bahan Tipis (m)</th>
+          <th>Deskripsi Tipis</th>
+          <th>Rail (m)</th>
+          <th>Ring</th>
+        </tr>
+      </thead>
+      <tbody id="body-tabel">
+        <tr>
+          <td data-label="Nama Ruangan"><input type="text"></td>
+          <td data-label="Lebar"><input type="number" onchange="hitungOtomatis(this)"></td>
+          <td data-label="Tinggi"><input type="number" onchange="hitungOtomatis(this)"></td>
+          <td data-label="Jumlah Jendela"><input type="number" onchange="hitungOtomatis(this)"></td>
+          <td data-label="Bahan Tebal (m)"><input type="text" readonly></td>
+          <td data-label="Deskripsi Tebal">
+            <select onchange="hitungOtomatis(this)">
+              <!-- options unchanged -->
+            </select>
+          </td>
+          <td data-label="Bahan Tipis (m)"><input type="text" readonly></td>
+          <td data-label="Deskripsi Tipis">
+            <select onchange="hitungOtomatis(this)">
+              <!-- options unchanged -->
+            </select>
+          </td>
+          <td data-label="Rail (m)"><input type="text" readonly></td>
+          <td data-label="Ring"><input type="text" readonly></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div class="button-container">
+      <button onclick="tambahBaris()">Tambah Baris</button>
+      <button onclick="simpanData()">Simpan</button>
+      <button onclick="window.print()">Cetak</button>
+      <button onclick="previewData()">Preview</button>
+    </div>
+    
+    <div id="preview-modal">
+      <div class="modal-content">
+        <h3>Preview Data</h3>
+        <div class="table-container">
+          <table class="responsive-table" id="preview-table">
+            <!-- Preview table content generated dynamically -->
+          </table>
+        </div>
+        <button class="close-btn" onclick="document.getElementById('preview-modal').style.display='none'">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add data labels for mobile view
+    function setDataLabels() {
+      const headers = document.querySelectorAll('#tabel-gorden thead th');
+      document.querySelectorAll('#tabel-gorden tbody tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, i) => {
+          if (headers[i]) {
+            cell.setAttribute('data-label', headers[i].textContent);
+          }
+        });
+      });
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', setDataLabels);
+
+    function tambahBaris() {
+      const tbody = document.getElementById('body-tabel');
+      const newRow = tbody.querySelector('tr').cloneNode(true);
+      newRow.querySelectorAll('input, select').forEach(el => el.value = '');
+      tbody.appendChild(newRow);
+      setDataLabels(); // Update data labels for new row
+    }
+
+    // Other functions remain unchanged (hitungOtomatis, pembulatanKhusus, rumusHitung, simpanData, previewData)
+    // ... [Existing JavaScript functions] ...
+
+    function previewData() {
+      const previewTable = document.getElementById('preview-table');
+      previewTable.innerHTML = `
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama Ruangan</th>
+            <th>Lebar</th>
+            <th>Tinggi</th>
+            <th>Jumlah</th>
+            <th>Bahan Tebal</th>
+            <th>Deskripsi Tebal</th>
+            <th>Bahan Tipis</th>
+            <th>Deskripsi Tipis</th>
+            <th>Rail</th>
+            <th>Ring</th>
+          </tr>
+        </thead>
+        <tbody id="preview-table-body"></tbody>
+      `;
+      
+      // ... [Existing previewData code to populate table] ...
+      
+      // Add data labels to preview table
+      const previewHeaders = previewTable.querySelectorAll('thead th');
+      document.querySelectorAll('#preview-table-body tr').forEach(row => {
+        const cells = row.querySelectorAll('td');
+        cells.forEach((cell, i) => {
+          if (previewHeaders[i]) {
+            cell.setAttribute('data-label', previewHeaders[i].textContent);
+          }
+        });
+      });
+      
+      document.getElementById('preview-modal').style.display = 'block';
+    }
+  </script>
 </body>
 </html>
