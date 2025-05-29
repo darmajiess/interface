@@ -1,78 +1,26 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemesanan Gorden</title>
-    <link rel="stylesheet" href="style.css">
+@media print {
+    .compact-report {
+        position: absolute;
+        top: 0.5cm; /* Sesuaikan dengan margin kertas */
+        left: 0.5cm;
+        right: 0.5cm;
+        bottom: 0.5cm;
+    }
     
-</head>
-<body>
-    <div class="container">
-        <h1>Form Pemesanan Gorden</h1>
-        <form id="orderForm">
-            <!-- Bagian Data Pribadi -->
-            <div class="form-group">
-                <label for="nama">Nama Lengkap*:</label>
-                <input type="text" id="nama" name="nama" required>
-            </div>
-
-            <div class="form-group">
-                <label for="alamat">Alamat Lengkap*:</label>
-                <textarea id="alamat" name="alamat" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="telp">Nomor Telepon/HP*:</label>
-                <input type="tel" id="telp" name="telp" pattern="[0-9]{10,13}" required>
-                <small>Format: 081234567890</small>
-            </div>
-
-            <div class="form-group">
-                <label for="telp2">Nomor Telepon/HP Tambahan (opsional):</label>
-                <input type="tel" id="telp2" name="telp2" pattern="[0-9]{10,13}">
-                <small>Boleh dikosongkan</small>
-            </div>
-
-            <!-- Bagian Tanggal -->
-            <div class="form-group">
-                <label for="tglPesan">Tanggal Pemesanan*:</label>
-                <input type="date" id="tglPesan" name="tglPesan" required>
-            </div>
-
-            <div class="form-group">
-                <label for="tglRencana">Tanggal Rencana Ambil/Pasang*:</label>
-                <input type="date" id="tglRencana" name="tglRencana" required>
-            </div>
-
-            <div class="form-group">
-                <label for="tglAktual">Tanggal Aktual Ambil/Pasang:</label>
-                <input type="date" id="tglAktual" name="tglAktual">
-                <small>Diisi saat sudah dilakukan</small>
-            </div>
-
-            <!-- Bagian Upload Gambar -->
-            <div class="form-group">
-                <label>Upload Gambar Desain:</label>
-                <div class="upload-options">
-                    <div class="upload-btn">
-                        <button type="button" class="camera-btn" id="openCamera">
-                        <label for="fileUpload">Ambil Foto</label>
-                    </button>
-                    </div>
-                    <div class="upload-btn">
-                        <input type="file" id="fileUpload" accept="image/*">
-                        <label for="fileUpload">Pilih dari Galeri</label>
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn">Kirim Pesanan</button>
-        </form>
-    </div>
-
-<!-- panggil script </body> -->
-<script src="script.js"></script>
-
-</body>
-</html>
+    .report-card {
+        margin-top: 0; /* Hilangkan margin atas kartu */
+    }
+    
+    .report-title {
+        margin-top: 0; /* Hilangkan margin atas judul */
+    }
+    
+    .print-header {
+        margin-top: 0; /* Hilangkan margin atas header */
+        padding-top: 0;
+    }
+    
+    .print-header h2 {
+        margin-top: 0; /* Hilangkan margin atas judul header */
+    }
+}
